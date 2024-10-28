@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-pvc
+  namespace: backup
+  labels:
+    app: backup-pvc
+spec:
+  storageClassName: rook-ceph-block # or any other storage class
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi

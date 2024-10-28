@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: backup
+  name: backup-master-database
+spec:
+  schedule: "0 1 * * *"
+  successfulJobsHistoryLimit: 3    # Giữ lại lịch sử 3 job thành công
+  failedJobsHistoryLimit: 1        # Giữ lại lịch sử 1 job thất bại
+  concurrencyPolicy: Forbid        # Không cho phép chạy đồng thời
+  jobTemplate:
+    spec:
+      backoffLimit: 3              # Số lần retry khi job thất bại
+      template:
+        spec:
+          containers:
+            - name: backup-master-database
+              image: buithephong/backup:latest
+              imagePullPolicy: Always
+              env:
+              - name: BACKUP_TYPE
+                value: "mariadb"
+              - name: BACKUP_PREFIX
+                value: "dbmaster"
+              - name: KEEP_BACKUP
+                value: "7"
+              - name: MM_WEBHOOK_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: backup
+                    key: mm_webhook_url
+              - name: BACKUP_DESTINATION
+                value: "/home/backup"
+              - name: DB_HOST
+                value: "XXX.XXX.XXX.XXX" # Khai báo IP của Pos
+              - name: DB_PORT
+                value: "3306" # Port của DB
+              - name: DB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: backup
+                    key: db_user
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: backup
+                    key: db_password                
+              volumeMounts:
+                - mountPath: /home/backup
+                  name: backup-pvc
+              lifecycle:
+                preStop:
+                  exec:
+                    command: ["/bin/sh", "-c", "sleep 10"]  # Đợi 10s trước khi stop
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 0
+          imagePullSecrets:
+            - name: token-registry # Secret để pull image
+          volumes:
+            - name: backup-pvc
+              persistentVolumeClaim:
+                claimName: backup-pvc
+          terminationGracePeriodSeconds: 60  # Thời gian chờ pod terminate
