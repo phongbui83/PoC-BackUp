@@ -1,4 +1,4 @@
-# Hệ Thống Backup Tự Động
+# PoC Hệ Thống Backup Tự Động
 
 Giải pháp backup cho cơ sở dữ liệu MySQL, MariaDB, PostgreSQL và File/Folder, chạy trên Kubernetes.
 
