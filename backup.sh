@@ -1,6 +1,6 @@
 #!/bin/bash
 # Phong of Chuc Backup System
-# Author : Bui The Phong <buithephong@luvina.net>
+# Author : Bui The Phong <buithephong@gmail.com>
 # Description: Script to backup files, MySQL/MariaDB, or PostgreSQL databases
 
 # Format log 
