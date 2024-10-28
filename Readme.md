@@ -205,7 +205,7 @@ kubectl logs <pod-name> -n backup
 ```
 
 ### Kiểm Tra File Backup
-** Vào NAS79 -> CLOUDDATAMAIN -> backup-backup-pvc-cf50ecb6-6ecb-448a-833c-334d39db9bbf
+
 
 ## Xử Lý Sự Cố
 
